@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import authRole from "../utils/authRole.js";
+import bcrypt from "bcryptjs"
 
 const userSchema= mongoose.Schema(
     {
@@ -37,3 +38,17 @@ const userSchema= mongoose.Schema(
         timestamps:true
     }
 )
+
+// challenge-1 encrypt the password - hooks
+// mongoose hook
+
+userSchema.pre('save', async function(next){
+    if( ! this.isModified("password"))
+    {
+        return next()
+    }
+    this.password= await bcrypt.hash(this.password, 10)
+})
+
+//mongoose Schema method 
+// add more feature directly to your schema
